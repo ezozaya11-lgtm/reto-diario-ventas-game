@@ -1,0 +1,1050 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Reto Diario de Ventas | Game</title>
+<style>
+*{box-sizing:border-box}
+script{display:none!important}
+body{margin:0;background:#0e0e0f;color:#fff;font-family:Arial,sans-serif}
+main{max-width:680px;margin:auto;padding:24px 18px 70px}
+h1{text-align:center;font-size:29px;margin:12px 0 28px}
+label{display:block;font-size:17px;font-weight:800;margin:16px 0 8px}
+input,select{width:100%;padding:15px;border-radius:14px;border:1px solid #444;background:#1b1b1d;color:#fff;font-size:17px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:#1b1b1d;border:1px solid #343437;border-radius:20px;padding:18px;margin-top:18px}
+.center{text-align:center}.muted{color:#aaa}.big{font-size:44px;font-weight:900;margin:8px 0}
+.tools{display:flex;gap:10px;align-items:center;margin-top:14px}
+.edit{flex:1;border:1px solid #444;background:#242426;color:#fff;border-radius:13px;padding:13px;font-weight:800}
+.gift{width:52px;height:48px;border:1px solid #555;background:#242426;border-radius:13px;font-size:25px}
+.gift.active{border-color:#d6a300;background:#3b2b00}
+.panel{display:none;margin-top:12px;padding:16px;background:#141415;border:1px solid #555;border-radius:16px}
+.panel.show{display:block}
+.btn{width:100%;padding:15px;border:0;border-radius:14px;font-size:16px;font-weight:900;margin-top:14px;background:#ff5b5f;color:#fff}
+.secondary{background:#333}
+.goldCard{background:linear-gradient(135deg,#3b2700,#694400);border:1px solid #a86c00}
+.goldtxt{color:#ffd76a}
+.activeLine{display:none;margin-top:13px;padding:10px 12px;border:1px solid #8f6a00;border-radius:12px;background:#2b2104;color:#ffd76a;font-weight:800}
+.activeLine.show{display:block}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}
+.stat{background:#242426;border-radius:13px;padding:12px;text-align:center}
+.stat b{display:block;font-size:24px}
+.score{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.score div{background:#242426;border-radius:13px;padding:11px 4px;text-align:center}
+.notice{margin-top:12px;padding:12px;border-radius:13px;background:#292107;border:1px solid #745900;color:#ffd76a;font-weight:800}
+.hidden{display:none!important}
+.progress{height:14px;background:#333;border-radius:999px;overflow:hidden;margin-top:14px}
+.bar{height:100%;background:#ffd76a;width:0%;transition:.3s}
+.road{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.chip{background:#242426;border:1px solid #3b3b3d;border-radius:12px;padding:9px 4px;text-align:center;font-size:12px}
+.treasure{background:linear-gradient(135deg,#2b2104,#4d3900);border:1px solid #8f6a00}
+.treasureTitle{font-size:24px;font-weight:900;color:#ffd76a}
+.treasureValue{font-size:42px;font-weight:900;color:#ffd76a}
+@media(max-width:480px){.road{grid-template-columns:repeat(3,1fr)}}
+
+body{background:radial-gradient(circle at top,#19191c 0,#0e0e0f 42%,#09090a 100%)}
+main{max-width:760px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:4px 0 14px}
+.brand{font-size:13px;letter-spacing:.12em;color:#aaa;font-weight:900}
+.statusPill{display:inline-flex;align-items:center;gap:7px;padding:9px 12px;border-radius:999px;background:#242426;border:1px solid #3a3a3d;font-size:12px;font-weight:900;color:#ddd}
+.statusDot{width:8px;height:8px;border-radius:50%;background:#777}
+.statusPill.live .statusDot{background:#55d887;box-shadow:0 0 12px #55d887}
+.configCard{transition:.25s ease;overflow:hidden}
+.configCard.compact{padding:10px 12px;margin-top:10px}
+.configCard.compact .configBody{display:none!important}
+.configSummary{display:none;align-items:center;justify-content:space-between;gap:10px}
+.configCard.compact .configSummary{display:flex!important}
+.configSummaryText{font-size:13px;color:#aaa}
+.configSummaryText b{display:block;color:#fff;font-size:15px;margin-bottom:2px}
+.compactActiveBadge{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:6px 9px;border-radius:999px;background:#2b2104;border:1px solid #8f6a00;color:#ffd76a;font-size:11px;font-weight:900;letter-spacing:.04em}
+.smallBtn{border:1px solid #444;background:#242426;color:#fff;border-radius:12px;padding:10px 12px;font-weight:900}
+.startBtn{background:#fff;color:#111}
+.hero{display:none!important}
+.sectionTitle{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.liveBadge{font-size:11px;padding:7px 9px;border-radius:999px;background:#2a2a2d;color:#ddd;border:1px solid #3a3a3e}
+.saleCard{border-color:#4c4c52}
+.saleCard .btn{font-size:18px;padding:17px}
+.road .chip.current{border-color:#fff;background:#303034}
+.road .chip.win{border-color:#436e52;background:#1c2d22}
+.road .chip.perfect{border-color:#7c6720;background:#31280c}
+.road .chip.miss{border-color:#6f3d3f;background:#301a1b}
+.card{padding:14px;margin-top:12px;border-radius:16px}
+.score{gap:6px;margin-top:10px}
+.score div{padding:8px 3px;border-radius:11px}
+.score div b{font-size:18px}
+.score small{font-size:10px}
+#nextCard{display:none!important}
+.saleCard{padding:14px}
+.saleCard input{padding:12px;font-size:16px}
+
+#sale{
+  margin-top:14px;
+  min-height:78px;
+  padding:18px 20px!important;
+  border:2px solid #c99a16!important;
+  background:#151515!important;
+  border-radius:18px!important;
+  font-size:28px!important;
+  font-weight:900;
+  text-align:center;
+  color:#fff!important;
+  box-shadow:0 0 0 1px rgba(255,215,106,.08), inset 0 0 18px rgba(255,215,106,.035);
+  transition:.18s ease;
+}
+#sale::placeholder{
+  color:#d7c17a;
+  opacity:.92;
+  font-size:18px;
+  font-weight:800;
+}
+#sale:focus{
+  outline:none;
+  border-color:#ffd76a!important;
+  box-shadow:0 0 0 4px rgba(255,215,106,.14), 0 0 24px rgba(255,215,106,.14);
+  transform:translateY(-1px);
+}
+.saleCard .btn{padding:13px;font-size:16px;margin-top:10px}
+.saleCard p{margin:8px 0;font-size:12px}
+.liveBadge{font-size:10px;padding:5px 7px}
+
+@media(max-width:430px){
+  main{padding:14px 12px 50px}
+  h1{font-size:25px;margin:10px 0 18px}
+}
+
+/* MODO CONCURSO: solo objetivo + captura de venta */
+
+body.specialFocus #contestRemainingLabel{
+  display:block!important;
+  font-size:13px!important;
+  letter-spacing:.08em;
+  color:#d3b55d!important;
+}
+body.specialFocus #contestProgressLine{
+  display:block;
+}
+
+body.specialFocus main > *{display:none!important}
+body.specialFocus #contestCard{
+  display:flex!important;
+  min-height:430px;
+  flex-direction:column;
+  justify-content:center;
+  margin-top:28px;
+}
+body.specialFocus #contestState{
+  font-size:38px;
+  line-height:1.05;
+  margin-top:18px!important;
+}
+body.specialFocus #contestGoal{
+  font-size:76px;
+  line-height:1;
+  margin:18px 0 10px!important;
+}
+body.specialFocus #contestMsg{font-size:16px}
+body.specialFocus .saleCard{
+  display:block!important;
+  margin-top:14px;
+  padding:18px;
+}
+body.specialFocus .saleCard .sectionTitle,
+body.specialFocus .saleCard #inlineNext,
+body.specialFocus .saleCard #current{
+  display:none!important;
+}
+body.specialFocus .saleCard input{
+  display:block!important;
+  text-align:center;
+  font-size:34px!important;
+  padding:18px!important;
+}
+body.specialFocus .saleCard button{
+  display:block!important;
+  padding:17px!important;
+  font-size:18px!important;
+}
+body.specialFocus .saleCard #feedback{
+  display:block!important;
+}
+
+/* v1.8: la meta de la hora es la protagonista */
+#inlineNext{
+  display:block!important;
+  text-align:center!important;
+  padding:18px 14px!important;
+}
+#inlineNext>div{width:100%!important}
+#inlineNextValue{
+  display:block!important;
+  text-align:center!important;
+  font-size:64px!important;
+  margin:12px auto 4px!important;
+  line-height:1!important;
+}
+#inlineNextInfo{text-align:center!important;font-size:14px!important}
+.saleCard .sectionTitle{justify-content:center!important;position:relative}
+.saleCard .sectionTitle #liveHour{position:absolute;right:0}
+.saleCard .sectionTitle>b{font-size:20px}
+#current{text-align:center;font-size:13px!important}
+#daily{font-size:30px!important}
+.stats .stat b{font-size:20px!important}
+
+/* META DEL DÍA CUMPLIDA: se apagan los retos por hora */
+.saleCard.dayCompleteMode .sectionTitle{
+  justify-content:center!important;
+}
+.saleCard.dayCompleteMode #liveHour,
+.saleCard.dayCompleteMode #inlineNext,
+.saleCard.dayCompleteMode #current{
+  display:none!important;
+}
+.saleCard.dayCompleteMode .postGoalMessage{
+  display:block!important;
+}
+.postGoalMessage{
+  display:none;
+  text-align:center;
+  margin:4px 0 14px;
+  padding:13px 14px;
+  border-radius:14px;
+  background:#211800;
+  border:1px solid #7b5a00;
+  color:#ffd76a;
+  font-weight:900;
+}
+
+
+/* CIERRE DEL DÍA: portada final, sin captura de más ventas */
+body.dayFinished main > *{display:none!important}
+body.dayFinished .topbar,
+body.dayFinished h1,
+body.dayFinished #finalScreen{display:block!important}
+body.dayFinished .topbar{display:flex!important}
+#finalScreen{display:none}
+.finalHero{
+  background:linear-gradient(145deg,#201700,#4a3200);
+  border:1px solid #a97800;
+  border-radius:22px;
+  padding:24px 18px;
+  text-align:center;
+  margin-top:16px;
+}
+.finalEyebrow{font-size:14px;font-weight:900;letter-spacing:.08em;color:#ffd76a}
+.finalTitle{font-size:34px;font-weight:900;margin:10px 0 4px}
+.finalBudget{font-size:18px;color:#ccc}
+.finalSales{font-size:58px;font-weight:900;color:#ffd76a;line-height:1;margin:22px 0 8px}
+.finalReach{font-size:27px;font-weight:900;margin-bottom:18px}
+.finalGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
+.finalStat{background:#161617;border:1px solid #3b3b3d;border-radius:14px;padding:12px 6px}
+.finalStat b{display:block;font-size:24px}
+.finalPrize{
+  margin-top:16px;padding:14px;border-radius:15px;
+  background:#17130a;border:1px solid #8f6a00;color:#ffd76a;font-weight:900
+}
+.finalRecord{
+  margin-top:12px;padding:14px;border-radius:15px;
+  background:#111113;border:1px solid #3a3a3e;font-weight:800
+}
+
+
+/* CIERRE FINAL COMPACTO EN CELULAR */
+body.dayFinished{
+  overflow-x:hidden;
+}
+body.dayFinished main{
+  padding-bottom:8px!important;
+}
+body.dayFinished #finalScreen{
+  min-height:calc(100dvh - 150px);
+}
+body.dayFinished .finalHero{
+  box-sizing:border-box;
+  margin-top:8px;
+  padding:16px 14px 14px;
+}
+body.dayFinished .finalTitle{
+  font-size:27px;
+  margin:6px 0 2px;
+}
+body.dayFinished .finalBudget{
+  font-size:15px;
+}
+body.dayFinished .finalSales{
+  font-size:48px;
+  margin:14px 0 5px;
+}
+body.dayFinished .finalReach{
+  font-size:22px;
+  margin-bottom:10px;
+}
+body.dayFinished .finalGrid{
+  margin-top:10px;
+  gap:6px;
+}
+body.dayFinished .finalStat{
+  padding:8px 4px;
+}
+body.dayFinished .finalStat b{
+  font-size:20px;
+}
+body.dayFinished .finalStat small{
+  font-size:10px;
+}
+body.dayFinished .finalPrize,
+body.dayFinished .finalRecord{
+  margin-top:8px;
+  padding:9px 8px;
+  font-size:13px;
+}
+@media (max-width:430px), (max-height:850px){
+  body.dayFinished .topbar{padding-top:5px!important;padding-bottom:5px!important}
+  body.dayFinished h1{font-size:23px!important;margin:8px 0!important}
+  body.dayFinished .finalHero{padding:12px 11px}
+  body.dayFinished .finalEyebrow{font-size:11px}
+  body.dayFinished .finalTitle{font-size:23px}
+  body.dayFinished .finalSales{font-size:42px;margin:10px 0 3px}
+  body.dayFinished .finalReach{font-size:19px;margin-bottom:7px}
+  body.dayFinished .finalGrid{margin-top:7px}
+  body.dayFinished .finalStat{padding:6px 3px}
+  body.dayFinished .finalStat b{font-size:18px}
+  body.dayFinished .finalPrize,
+  body.dayFinished .finalRecord{margin-top:6px;padding:7px;font-size:12px}
+}
+
+
+/* PANTALLA INICIAL: solo configuración */
+body:not(.dayStartedMode):not(.dayFinished) main > *{display:none!important}
+body:not(.dayStartedMode):not(.dayFinished) .topbar,
+body:not(.dayStartedMode):not(.dayFinished) h1,
+body:not(.dayStartedMode):not(.dayFinished) #configCard{
+  display:block!important;
+}
+body:not(.dayStartedMode):not(.dayFinished) .topbar{display:flex!important}
+body:not(.dayStartedMode):not(.dayFinished) #configCard{
+  margin-top:18px;
+}
+/* Durante el día vuelve toda la interfaz normal */
+body.dayStartedMode:not(.dayFinished) main > *{
+  display:initial;
+}
+body.dayStartedMode:not(.dayFinished) .topbar{display:flex}
+body.dayStartedMode:not(.dayFinished) section{display:block}
+body.dayStartedMode:not(.dayFinished) .score{display:grid}
+
+
+/* v3.3: cabecera de venta limpia en móvil */
+@media(max-width:520px){
+  .saleCard .sectionTitle{
+    display:flex!important;
+    flex-direction:column!important;
+    justify-content:center!important;
+    align-items:center!important;
+    gap:8px!important;
+    position:static!important;
+    text-align:center!important;
+  }
+  .saleCard .sectionTitle #liveHour{
+    position:static!important;
+    right:auto!important;
+    align-self:center!important;
+  }
+  .saleCard .sectionTitle>b{font-size:21px!important;line-height:1.15}
+}
+
+
+#inlineNext{
+  padding:22px 14px!important;
+}
+#inlineNextValue{
+  font-size:82px!important;
+  line-height:.95!important;
+  margin:10px auto 2px!important;
+  letter-spacing:-.03em;
+}
+#inlineNextInfo{
+  font-size:17px!important;
+  margin-top:0!important;
+  color:#bdbdbd!important;
+}
+@media(max-width:430px){
+  #inlineNextValue{font-size:76px!important}
+  #inlineNextInfo{font-size:16px!important}
+}
+
+#liveHour{display:none!important}
+.saleCard .sectionTitle{justify-content:center!important}
+</style>
+</head>
+<body>
+<main>
+<div class="topbar">
+  <div class="brand">RETO DIARIO DE VENTAS | GAME</div>
+  <div id="dayStatus" class="statusPill"><span class="statusDot"></span><span id="dayStatusText">CONFIGURANDO</span></div>
+</div>
+<h1>🔥 RETO DIARIO DE VENTAS</h1>
+
+<section id="configCard" class="card configCard">
+  <div class="configSummary">
+    <div class="configSummaryText">
+      <span id="compactActiveBadge" class="compactActiveBadge">🔥 RETO ACTIVO</span>
+      <b id="configSummaryTitle" class="hidden">Tienda · $0</b>
+      <span id="configSummaryHours" class="hidden">09:00 → 21:00</span>
+    </div>
+    <button type="button" id="openConfig" class="smallBtn">⚙️ Editar</button>
+  </div>
+  <div class="configBody">
+<label>Tienda</label>
+<select id="store">
+<option value="">Selecciona tu tienda</option>
+<option>TM D Rio Reynosa</option>
+<option>TM Mty Cn 2</option>
+<option>TM Pl Fiesta Anahuac</option>
+<option>TM Se Catarina</option>
+<option>TM Gl Mty</option>
+<option>TM Patio Lincoln</option>
+<option>TM Cumbres Mty</option>
+<option>TM Sendero Sur Saltillo</option>
+<option>TM Se Periferico Reynosa</option>
+<option>TM Se Esc Mty</option>
+<option>TM Mty Valle Ote</option>
+<option>TM Mty Pz Sn Agustin</option>
+<option>TM Esfera Mty</option>
+<option>TM Gl Saltillo</option>
+<option>TM Se La Fe</option>
+<option>TM Mty Citadel</option>
+<option>IS Pl Fa Anahuac</option>
+<option>TM Se Apodaca</option>
+<option>TM Patio Matamoros</option>
+<option>TM Gran Patio Monterrey</option>
+<option>TM Sun Mall Mty</option>
+<option>TM Se Saltillo</option>
+<option>TM RI Reynosa</option>
+<option>IS Gl Mty</option>
+<option>TM Pa La Fe Mty</option>
+</select>
+
+<label>Presupuesto del día</label>
+<input id="budget" type="number" value="20000">
+
+<div class="row">
+<div><label>Hora de apertura</label><select id="openHour">
+<option value="9" selected>09:00</option>
+<option value="10">10:00</option>
+<option value="11">11:00</option>
+<option value="12">12:00</option>
+<option value="13">13:00</option>
+<option value="14">14:00</option>
+<option value="15">15:00</option>
+<option value="16">16:00</option>
+<option value="17">17:00</option>
+<option value="18">18:00</option>
+<option value="19">19:00</option>
+<option value="20">20:00</option>
+<option value="21">21:00</option>
+</select></div>
+<div><label>Hora de cierre</label><select id="closeHour">
+<option value="9">09:00</option>
+<option value="10">10:00</option>
+<option value="11">11:00</option>
+<option value="12">12:00</option>
+<option value="13">13:00</option>
+<option value="14">14:00</option>
+<option value="15">15:00</option>
+<option value="16">16:00</option>
+<option value="17">17:00</option>
+<option value="18">18:00</option>
+<option value="19">19:00</option>
+<option value="20">20:00</option>
+<option value="21" selected>21:00</option>
+</select></div>
+</div>
+
+<div class="tools">
+<button type="button" id="editGoalsBtn" class="edit">✏️ Editar metas por hora</button>
+<button type="button" id="gift" class="gift">🎁</button>
+</div>
+
+<div id="giftPanel" class="panel">
+<b>🎁 PREMIO ESPECIAL</b>
+<label>Premio</label>
+<select id="prize"><option>⏰ Salir 1 hora antes</option></select>
+<div class="row">
+<div>
+<label>Hora de inicio</label>
+<select id="from"></select>
+</div>
+<div>
+<label>Hora final</label>
+<select id="to"></select>
+</div>
+</div>
+<p class="muted">🎯 Se evaluará por venta acumulada durante el periodo seleccionado.</p>
+<button type="button" id="activateGift" class="btn">🔥 ACTIVAR PREMIO</button>
+</div>
+
+<div id="goalPanel" class="panel">
+<b>✏️ EDITAR METAS POR HORA</b>
+<p class="muted">Estas metas alimentan tanto el Reto del Día como cualquier Premio Especial activo.</p>
+<div id="goalEditor"></div>
+<button type="button" id="applyGoals" class="btn">✅ APLICAR METAS</button>
+<button type="button" id="restoreGoals" class="btn secondary">↻ RESTAURAR CURVA</button>
+</div>
+
+<button type="button" id="startDay" class="btn startBtn">🚀 INICIAR RETO DEL DÍA</button>
+</div>
+</section>
+
+<section class="card center">
+<div class="muted">RETO DEL DÍA</div>
+<div id="daily" class="big">$20,000</div>
+<div id="activeLine" class="activeLine">🎁 RETO ACTIVO</div>
+<div class="stats">
+<div class="stat"><span class="muted">Venta acumulada</span><b id="total">$0</b></div>
+<div class="stat"><span class="muted">Alcance</span><b id="reach">0.0%</b></div>
+</div>
+<div class="progress"><div id="dayBar" class="bar"></div></div>
+</section>
+
+<section id="contestCard" class="card goldCard hidden center">
+<div class="goldtxt" style="font-weight:900;font-size:18px">🎁 TIENES UN RETO</div>
+<div id="contestState" class="big center" style="margin-top:14px">CORTE A LAS 12:00</div>
+<div class="muted" style="margin-top:12px">Monto buscado</div>
+<div id="contestGoal" class="big goldtxt">$0</div>
+<div id="contestRemainingLabel" class="muted" style="margin-top:4px;font-weight:800">MONTO DEL RETO</div>
+<div id="contestProgressLine" class="hidden" style="margin:12px auto 0;max-width:420px;padding:12px 14px;border-radius:14px;background:#211800;border:1px solid #7b5a00;color:#ffd76a;font-weight:900;font-size:18px"></div>
+<div id="contestMsg" class="notice">🔥 Este es tu único objetivo por ahora.</div>
+</section>
+
+<section class="card hero">
+<div id="heroChallenge"></div><div id="heroChallengeText"></div><div id="heroChallengeBar"></div>
+<div id="expectedNow"></div><div id="paceTotal"></div><div id="paceReach"></div><div id="paceValue"></div><div id="paceText"></div>
+</section>
+
+<section id="prizeWin" class="card goldCard center hidden">
+<div style="font-size:58px">🏆⏰</div>
+<div class="treasureTitle">¡PREMIO DESBLOQUEADO!</div>
+<div class="big goldtxt">1 HORA LIBRE</div>
+<p>Tu desempeño hoy te deja libre una hora antes.</p>
+<div id="prizeSummary" class="notice"></div>
+<button type="button" id="continueDay" class="btn">🔥 CONTINUAR EL DÍA</button>
+</section>
+
+<section class="score">
+<div>⭐<br><b id="stars">0</b><br><small class="muted">Horas ganadas</small></div>
+<div>🔥<br><b id="streak">x0</b><br><small class="muted">Racha</small></div>
+<div>⚡<br><b id="perfect">0</b><br><small class="muted">Horas perfectas</small></div>
+</section>
+<div class="center muted" style="font-size:11px;margin-top:6px">⭐ 🔥 ⚡ son logros por hora, no montos de venta.</div>
+<section id="treasure" class="card treasure hidden center">
+<div id="treasureClosed">
+<div style="font-size:58px">🎁</div>
+<div class="treasureTitle">COFRE DESBLOQUEADO</div>
+<p>Tócalo para descubrir el siguiente reto.</p>
+<button type="button" id="openChest" class="btn">ABRIR COFRE 🪙</button>
+</div>
+<div id="treasureOpen" class="hidden">
+<div id="treasureTitle" class="treasureTitle">🪙 COFRE DE BRONCE</div>
+<div id="treasureValue" class="treasureValue">$0</div>
+<div id="treasureText"></div>
+</div>
+</section>
+
+<section id="nextCard" class="card center">
+<b id="nextLabel">🎯 SIGUIENTE RETO</b>
+<div id="next" class="big">$0</div>
+<div id="nextInfo" class="muted">Configura el día</div>
+</section>
+
+<section id="saleCard" class="card saleCard">
+<div class="sectionTitle"><b id="saleCardTitle">💰 Venta de la hora</b><span id="liveHour" class="liveBadge">Esperando inicio</span></div>
+<div id="postGoalMessage" class="postGoalMessage">👑 META DEL DÍA CUMPLIDA · Todo lo que registres ahora suma únicamente a los retos especiales y al récord.</div>
+<div id="inlineNext" style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin:10px 0 12px;padding:13px 14px;border-radius:14px;background:#111113;border:1px solid #3b3b40">
+  <div style="min-width:0">
+    
+    <div id="inlineNextInfo" style="font-size:12px;color:#aaa;margin-top:4px">Configura el día</div>
+  </div>
+  <b id="inlineNextValue" style="font-size:38px;line-height:1;white-space:nowrap">$0</b>
+</div>
+<p id="current" class="muted">Configura el día</p>
+<input id="sale" type="number" min="0" inputmode="decimal" placeholder="💰 ESCRIBE AQUÍ LA VENTA">
+<button type="button" id="register" class="btn">REGISTRAR VENTA 🔥</button>
+<div id="feedback" class="center" style="font-weight:800;margin-top:12px"></div>
+</section>
+
+
+
+<section class="card">
+<b>📈 Camino del día</b>
+<div id="road" class="road"></div>
+</section>
+
+<section class="card center">
+<b>👑 RÉCORD DEL DÍA</b>
+<div id="record" class="big">0%</div>
+<div id="recordText" class="muted">Vamos por el 100%.</div>
+</section>
+
+<button type="button" id="reset" class="btn secondary">↻ Reiniciar demo</button>
+
+
+<section id="finalScreen">
+  <div class="finalHero">
+    <div class="finalEyebrow">🏁 CIERRE DEL DÍA</div>
+    <div id="finalStore" class="finalTitle">TIENDA</div>
+    <div class="finalBudget">Presupuesto del día <b id="finalBudget">$0</b></div>
+
+    <div id="finalHeadline" style="margin-top:22px;font-size:18px;font-weight:900">👑 META DEL DÍA CUMPLIDA</div>
+    <div id="finalSales" class="finalSales">$0</div>
+    <div style="color:#bbb">Venta final</div>
+    <div id="finalReach" class="finalReach">0.0%</div>
+
+    <div class="finalGrid">
+      <div class="finalStat">⭐<b id="finalStars">0</b><small>Horas ganadas</small></div>
+      <div class="finalStat">⚡<b id="finalPerfect">0</b><small>Perfectas</small></div>
+      <div class="finalStat">🏆<b id="finalPrizeCount">0</b><small>Premios</small></div>
+    </div>
+
+    <div id="finalPrize" class="finalPrize hidden"></div>
+    <div id="finalTier" class="finalPrize"></div>
+    <div id="finalRecord" class="finalRecord"></div>
+  </div>
+</section>
+
+<script>
+const HOURS=Array.from({length:13},(_,i)=>i+9);
+const W={9:2,10:3,11:4,12:5,13:6,14:7,15:9,16:11,17:12,18:12,19:11,20:9,21:6};
+const $=id=>document.getElementById(id);
+const money=n=>new Intl.NumberFormat('es-MX',{style:'currency',currency:'MXN',maximumFractionDigits:0}).format(Number(n)||0);
+const ht=h=>String(h).padStart(2,'0')+':00';
+
+let sales={},customGoals={},hourAsked={},hourResult={},contestPrepared=false,contestActive=false,contestFinished=false,prizeWon=false,chestOpened=false,dayStarted=false,contestFrom=null,contestTo=null,contestGoalLocked=null;
+
+
+function achievedTier(r){
+  if(r>=130) return '👑 MODO LEYENDA';
+  if(r>=120) return '💎 COFRE DIAMANTE';
+  if(r>=110) return '💰 COFRE DE ORO';
+  if(r>=105) return '🪙 COFRE DE BRONCE';
+  if(r>=100) return '🏆 META CUMPLIDA';
+  return '🎯 DÍA FINALIZADO';
+}
+function showFinalScreen(){
+  let b=+$('budget').value||0, t=total(), r=b?t/b*100:0, m=metrics();
+  document.body.classList.remove('specialFocus');
+  document.body.classList.add('dayFinished');
+
+  $('finalStore').textContent=$('store').value||'TIENDA';
+  $('finalBudget').textContent=money(b);
+  $('finalSales').textContent=money(t);
+  $('finalReach').textContent=r.toFixed(1)+'% DEL PRESUPUESTO';
+  $('finalHeadline').textContent=r>=100?'👑 META DEL DÍA CUMPLIDA':'🏁 DÍA FINALIZADO';
+  $('finalStars').textContent=m.stars;
+  $('finalPerfect').textContent=m.perfect;
+  $('finalPrizeCount').textContent=prizeWon?1:0;
+
+  if(prizeWon){
+    $('finalPrize').classList.remove('hidden');
+    $('finalPrize').textContent='🏆 PREMIO ESPECIAL GANADO · 1 HORA LIBRE';
+  }else{
+    $('finalPrize').classList.add('hidden');
+  }
+
+  $('finalTier').textContent=achievedTier(r);
+  let over=Math.max(0,t-b);
+  $('finalRecord').textContent=r>=100
+    ? `🔥 RÉCORD DE VENTA: ${money(t)} · ${money(over)} arriba de la meta`
+    : `Venta final ${money(t)}`;
+
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function fillHours(){
+ if(!$('openHour').options.length){
+   $('openHour').innerHTML=HOURS.map(h=>`<option value="${h}">${ht(h)}</option>`).join('');
+ }
+ if(!$('closeHour').options.length){
+   $('closeHour').innerHTML=HOURS.map(h=>`<option value="${h}">${ht(h)}</option>`).join('');
+ }
+ if(!$('openHour').value) $('openHour').value=9;
+ if(!$('closeHour').value) $('closeHour').value=21;
+ $('from').innerHTML=HOURS.filter(h=>h>=9&&h<=20).map(h=>`<option value="${h}">${ht(h)}</option>`).join('');
+ $('to').innerHTML=HOURS.filter(h=>h>=10&&h<=21).map(h=>`<option value="${h}">${ht(h)}</option>`).join('');
+ $('from').value=9;
+ $('to').value=12;
+}
+
+function refreshContestHours(){
+  let c=+$('closeHour').value;
+  let oldFrom=+$('from').value||9, oldTo=+$('to').value||Math.min(c,12);
+  // El Premio Especial siempre puede comenzar desde las 09:00.
+  $('from').innerHTML=HOURS.filter(h=>h>=9&&h<c).map(h=>`<option value="${h}">${ht(h)}</option>`).join('');
+  if(![...$('from').options].some(o=>+o.value===oldFrom)) oldFrom=9;
+  $('from').value=oldFrom;
+  let f=+$('from').value;
+  $('to').innerHTML=HOURS.filter(h=>h>f&&h<=c).map(h=>`<option value="${h}">${ht(h)}</option>`).join('');
+  if(![...$('to').options].some(o=>+o.value===oldTo)) oldTo=Math.min(c,f+3);
+  $('to').value=oldTo;
+}
+
+function active(){let a=+$('openHour').value,c=+$('closeHour').value;return HOURS.filter(h=>h>=a&&h<c)}
+function autoGoals(){let hs=active(),b=+$('budget').value||0,tw=hs.reduce((s,h)=>s+W[h],0)||1,r={};hs.forEach(h=>r[h]=b*W[h]/tw);return r}
+function goals(){let auto=autoGoals(),r={};active().forEach(h=>r[h]=customGoals[h]!=null?+customGoals[h]:auto[h]);return r}
+function buildGoalEditor(){
+ let g=goals();
+ $('goalEditor').innerHTML=active().map(h=>`<div style="display:grid;grid-template-columns:80px 1fr;gap:10px;align-items:center;margin-top:10px"><b>${ht(h)}-${ht(h+1)}</b><input data-goal-h="${h}" type="number" min="0" value="${Math.round(g[h]||0)}"></div>`).join('');
+}
+function total(){return Object.values(sales).reduce((a,b)=>a+(+b||0),0)}
+function nextHour(){for(const h of active())if(sales[h]==null)return h;return null}
+function cumGoal(h){let g=goals();return active().filter(x=>x<=h).reduce((s,x)=>s+g[x],0)}
+function metrics(){
+ let stars=0,perfect=0,st=0,done=active().filter(h=>sales[h]!=null);
+ done.forEach(h=>{
+   let res=hourResult[h];
+   if(res==='win'||res==='perfect') stars++;
+   if(res==='perfect') perfect++;
+ });
+ for(let i=done.length-1;i>=0;i--){
+   let res=hourResult[done[i]];
+   if(res==='win'||res==='perfect') st++; else break;
+ }
+ return{stars,perfect,st}
+}
+function treasureTarget(r){if(r<105)return[105,'🪙 COFRE DE BRONCE'];if(r<110)return[110,'💰 COFRE DE ORO'];if(r<120)return[120,'💎 COFRE DIAMANTE'];if(r<130)return[130,'👑 MODO LEYENDA'];return[Math.ceil(r/10)*10+10,'🚀 NUEVO RÉCORD']}
+
+
+
+function armContest(){
+  contestFrom=+$('from').value||9;
+  contestTo=+$('to').value||Math.min(21,contestFrom+1);
+  if(contestTo<=contestFrom){
+    alert('La hora final del concurso debe ser posterior a la hora de inicio.');
+    return false;
+  }
+  // Si el premio comienza antes del horario configurado del reto diario,
+  // ampliamos el inicio del día para que existan todos los cortes del concurso.
+  // Ej.: 09:00 a 11:00 = registros a las 10:00 y 11:00.
+  if(contestFrom < (+$('openHour').value||9)){
+    $('openHour').value=String(contestFrom);
+    customGoals={};
+    buildGoalEditor();
+  }
+
+  contestPrepared=true;
+  contestActive=true;
+  contestFinished=false;
+  prizeWon=false;
+
+  let gNow=goals();
+  contestGoalLocked=active()
+    .filter(h=>h>=contestFrom&&h<contestTo)
+    .reduce((sum,h)=>sum+(gNow[h]||0),0);
+
+  $('giftPanel').classList.remove('show');
+  $('gift').classList.add('active');
+  $('activeLine').classList.add('show');
+  $('activeLine').style.color='#ffd76a';
+  $('activeLine').textContent=`🎁 RETO ACTIVO · ${ht(contestFrom)} A ${ht(contestTo)} · Meta ${money(contestGoalLocked)}`;
+  updateConfigSummary();
+  return true;
+}
+
+function contestRange(){
+  let from=contestActive && contestFrom!=null ? contestFrom : (+$('from').value||9);
+  let to=contestActive && contestTo!=null ? contestTo : (+$('to').value||12);
+  return {from,to};
+}
+function contestTarget(){
+  if(contestActive && contestGoalLocked!=null) return contestGoalLocked;
+  let {from,to}=contestRange(), g=goals();
+  return active().filter(h=>h>=from&&h<to).reduce((sum,h)=>sum+(g[h]||0),0);
+}
+function contestSalesTotal(){
+  let {from,to}=contestRange();
+  return active().filter(h=>h>=from&&h<to).reduce((sum,h)=>sum+(+sales[h]||0),0);
+}
+function contestShouldBeVisible(){
+  if(!dayStarted || !contestActive || contestFinished) return false;
+  let {from,to}=contestRange(), nh=nextHour();
+  if(nh==null) return false;
+  return nh>=from && nh<to;
+}
+
+function renderContest(){
+ if(!contestShouldBeVisible()){
+   $('contestCard').classList.add('hidden');
+   document.body.classList.remove('specialFocus');
+   return;
+ }
+ $('contestCard').classList.remove('hidden');
+ document.body.classList.add('specialFocus');
+
+ let {from,to}=contestRange(), target=contestTarget(), sold=contestSalesTotal(), remaining=Math.max(0,target-sold);
+ $('contestState').textContent=`DE ${ht(from)} A ${ht(to)}`;
+
+ if(sold>0){
+   $('contestRemainingLabel').textContent='MONTO RESTANTE';
+   $('contestGoal').textContent=money(remaining);
+ }else{
+   $('contestRemainingLabel').textContent='MONTO DEL RETO';
+   $('contestGoal').textContent=money(target);
+ }
+
+ let recorded=active().filter(h=>h>=from&&h<to&&sales[h]!=null);
+ if(recorded.length){
+   let parts=recorded.map(h=>`Venta ${ht(h+1)} ${money(sales[h])}`);
+   let nh=nextHour();
+   if(nh!=null && nh<to) parts.push('?');
+   $('contestProgressLine').classList.remove('hidden');
+   $('contestProgressLine').textContent=parts.join(' + ');
+ }else{
+   $('contestProgressLine').classList.add('hidden');
+   $('contestProgressLine').textContent='';
+ }
+
+ $('contestMsg').textContent='🔥 Todo lo que vendas durante este periodo suma para ganar el premio.';
+}
+function expectedAtCurrentCut(){let nh=nextHour(),hs=active();if(!hs.length)return 0;if(nh==null)return +$('budget').value||0;return hs.filter(h=>h<nh).reduce((s,h)=>s+(goals()[h]||0),0)}
+function updateConfigSummary(){
+ $('configSummaryTitle').textContent=`${$('store').value||'Tienda'} · ${money(+$('budget').value||0)}`;
+ $('configSummaryHours').textContent=`${ht(+$('openHour').value)} → ${ht(+$('closeHour').value)}`;
+ $('compactActiveBadge').textContent=(contestPrepared&&contestActive&&!contestFinished)?'🎁 RETO ESPECIAL ACTIVO':'🔥 RETO ACTIVO';
+}
+function setDayStarted(v){
+  dayStarted=v;
+  document.body.classList.toggle('dayStartedMode',v);
+  $('configCard').classList.toggle('compact',v);
+  $('dayStatus').classList.toggle('live',v);
+  $('dayStatusText').textContent=v?'RETO ACTIVO':'CONFIGURANDO';
+  updateConfigSummary();
+}
+
+function reachedClosingTime(){
+  if(!dayStarted) return false;
+  const now=new Date();
+  const close=+$('closeHour').value||21;
+  return now.getHours()>=close;
+}
+
+function render(){
+ let b=+$('budget').value||0,t=total(),r=b?t/b*100:0,g=goals(),nh=nextHour(),m=metrics();
+
+ if(dayStarted && (nh==null || reachedClosingTime())){
+   showFinalScreen();
+   return;
+ }
+ updateConfigSummary();$('daily').textContent=money(b);$('total').textContent=money(t);$('reach').textContent=r.toFixed(1)+'%';$('dayBar').style.width=Math.min(100,r)+'%';
+
+ let dayGoalReached = b>0 && t>=b;
+ $('saleCard').classList.toggle('dayCompleteMode', dayGoalReached);
+ $('saleCardTitle').textContent = dayGoalReached ? '🛡️ VENTA AL COLCHÓN' : '💰 Venta de la hora';
+ if(dayGoalReached){
+   let recordHour=nextHour();
+   $('postGoalMessage').textContent=recordHour!=null
+     ? `👑 META DEL DÍA CUMPLIDA · A partir de aquí, todo lo que vendas se suma al COLCHÓN. 🛡️ Colchón acumulado: ${money(Math.max(0,t-b))}`
+     : `👑 META DEL DÍA CUMPLIDA · Todo lo adicional construyó tu COLCHÓN. 🛡️ Colchón acumulado: ${money(Math.max(0,t-b))}`;
+ }
+ $('stars').textContent=m.stars;$('streak').textContent='x'+m.st;$('perfect').textContent=m.perfect;
+ $('record').textContent=dayGoalReached?money(Math.max(0,t-b)):r.toFixed(1)+'%';
+ $('recordText').textContent=dayGoalReached?'🛡️ COLCHÓN ACUMULADO · Todo lo que vendas arriba del presupuesto protege el resultado del día.':'Vamos por el 100%.';
+ renderContest();
+
+ if(nh!=null && !dayGoalReached){
+   let c=cumGoal(nh),pending=Math.max(0,c-t),challenge=pending>0?pending:g[nh];
+   $('liveHour').textContent=`${ht(nh)} → ${ht(nh+1)}`;
+   $('next').textContent=money(challenge);
+   if(pending>0){
+     $('nextInfo').textContent=`Recupera ${money(pending)} para llegar al acumulado al corte ${ht(nh+1)}`;
+     $('current').textContent=`Corte ${ht(nh+1)} · Meta individual ${money(g[nh])} · Reto acumulado ${money(pending)}`;
+     $('inlineNextValue').textContent=money(pending);$('inlineNextInfo').textContent=`Recuperar al corte ${ht(nh+1)}`;
+   }else{
+     $('nextInfo').textContent=`Vas al día 🔥 · Conquista la meta de la hora`;
+     $('current').textContent=`Corte ${ht(nh+1)} · Meta de la hora ${money(g[nh])}`;
+     $('inlineNextValue').textContent=money(g[nh]||0);$('inlineNextInfo').textContent=`Meta de ${ht(nh)} a ${ht(nh+1)}`;
+   }
+ }else{
+   $('liveHour').textContent=dayGoalReached?'Meta cumplida':'Día completo';
+   $('inlineNextValue').textContent='🏁';
+   $('inlineNextInfo').textContent=dayGoalReached?'Todo lo adicional suma al COLCHÓN':'Todo suma al récord';
+ }
+
+ let treasureOn=b>0&&r>=100;$('treasure').classList.toggle('hidden',!treasureOn);
+ if(treasureOn&&chestOpened){
+   $('treasureClosed').classList.add('hidden');$('treasureOpen').classList.remove('hidden');
+   let[pct,label]=treasureTarget(r),target=b*pct/100,p=Math.max(0,target-t);
+   $('treasureTitle').textContent=label;$('treasureValue').textContent=money(p);$('treasureText').textContent=`Faltan ${money(p)} para llegar al ${pct}%. Todo lo que entra ahora construye récord.`;
+ }
+ $('road').innerHTML=active().map(h=>{
+   let asked=hourAsked[h]!=null?hourAsked[h]:g[h], res=hourResult[h];
+   let ic='⚪';
+   if(sales[h]!=null){
+     if(res==='perfect') ic='⚡';
+     else if(res==='win') ic='⭐';
+     else if(res==='miss') ic='🔴';
+     else if(res==='record') ic='👑';
+   }else if(h===nh && !dayGoalReached) ic='🎯';
+
+   let cls='chip';
+   if(sales[h]!=null){
+     if(res==='perfect') cls+=' perfect';
+     else if(res==='win') cls+=' win';
+     else if(res==='miss') cls+=' miss';
+   }else if(h===nh && !dayGoalReached) cls+=' current';
+
+   let valueText;
+   if(res==='record' && sales[h]!=null) valueText=money(sales[h]);
+   else if(dayGoalReached && sales[h]==null) valueText='RÉCORD';
+   else valueText=money(asked);
+
+   return `<div class="${cls}">${ic}<br><b>${ht(h+1)}</b><br>${valueText}</div>`;
+ }).join('');
+}
+
+$('startDay').onclick=()=>{
+ if(+$('closeHour').value<=+$('openHour').value){$('feedback').textContent='La hora de cierre debe ser posterior a la apertura.';return}
+ if((+$('budget').value||0)<=0){$('feedback').textContent='Configura un presupuesto válido para iniciar.';return}
+ if(!$('store').value){$('feedback').textContent='Selecciona una tienda para iniciar.';return}
+
+ // Si el usuario ya confirmó el premio, conservarlo como concurso activo.
+ if(contestPrepared && !contestActive){
+   contestActive=true;
+   contestFinished=false;
+ }
+
+ setDayStarted(true);
+ $('goalPanel').classList.remove('show');
+ $('giftPanel').classList.remove('show');
+ render();
+
+ if(contestPrepared && contestShouldBeVisible()){
+   document.body.classList.add('specialFocus');
+   $('contestCard').classList.remove('hidden');
+   setTimeout(()=>$('contestCard').scrollIntoView({behavior:'smooth',block:'start'}),80);
+ }else{
+   setTimeout(()=>$('configCard').scrollIntoView({behavior:'smooth',block:'start'}),120);
+ }
+};
+$('openConfig').onclick=()=>{
+  setDayStarted(false);
+  document.body.classList.remove('specialFocus');
+  $('configCard').scrollIntoView({behavior:'smooth',block:'start'});
+};
+$('gift').onclick=()=>$('giftPanel').classList.toggle('show');
+$('activateGift').onclick=()=>{
+ if(!armContest()) return;
+ render();
+ if(dayStarted){
+   document.body.classList.add('specialFocus');
+   $('contestCard').classList.remove('hidden');
+   setTimeout(()=>$('contestCard').scrollIntoView({behavior:'smooth',block:'start'}),80);
+ }
+};
+$('register').onclick=()=>{
+ if(document.body.classList.contains('dayFinished')) return;
+ if(!dayStarted)setDayStarted(true);
+ let raw=$('sale').value.trim(),v=Number(raw),h=nextHour(),g=goals();
+ if(raw===''||!Number.isFinite(v)||v<0){$('feedback').textContent='Ingresa una venta válida 💰';return}
+ if(h==null){showFinalScreen();return}
+
+ let totalBefore=total();
+
+ // Una vez cumplida la meta del día, ya no se califica la hora,
+ // pero la venta SÍ se guarda en la hora correspondiente para conservar el reporte.
+ if((+$('budget').value||0)>0 && totalBefore >= (+$('budget').value||0)){
+   sales[h]=v;
+   hourAsked[h]=0;
+   hourResult[h]='record';
+   $('sale').value='';
+   $('feedback').textContent=`🛡️ Venta de ${ht(h)} a ${ht(h+1)} agregada al COLCHÓN. Colchón acumulado: ${money(Math.max(0,total()-(+$('budget').value||0)))}`;
+   render();
+   return;
+ }
+
+ let required=Math.max(0,cumGoal(h)-totalBefore);
+ if(required<=0) required=g[h]||0;
+ hourAsked[h]=required;
+
+ sales[h]=v;$('sale').value='';
+
+ if(v>=required*1.1){
+   hourResult[h]='perfect';
+   $('feedback').textContent='⚡ ¡HORA PERFECTA!';
+ }else if(v>=required){
+   hourResult[h]='win';
+   $('feedback').textContent='⭐ ¡HORA CONQUISTADA!';
+ }else{
+   hourResult[h]='miss';
+   $('feedback').textContent=`🎯 Faltaron ${money(required-v)} para conquistar esta hora. El día continúa.`;
+ }
+
+ if(contestActive&&!contestFinished){
+   let {from,to}=contestRange();
+   let target=contestTarget();
+   let sold=contestSalesTotal();
+
+   // Si alcanzan la meta en cualquier corte del concurso, ganan en ese momento.
+   if(h>=from && h<to && sold>=target){
+     contestFinished=true;
+     prizeWon=true;
+     document.body.classList.remove('specialFocus');
+     $('contestCard').classList.add('hidden');
+     $('prizeWin').classList.remove('hidden');
+     $('prizeSummary').textContent=`Objetivo ${money(target)} · Logrado ${money(sold)} · +${money(sold-target)}`;
+   }
+   // Si termina el último corte sin alcanzar la meta, termina el concurso y volvemos al modo normal.
+   else if(h===to-1){
+     contestFinished=true;
+     document.body.classList.remove('specialFocus');
+     $('contestCard').classList.add('hidden');
+     $('activeLine').textContent='🎁 RETO ESPECIAL FINALIZADO';
+     $('activeLine').style.color='#aaa';
+   }
+ }
+ render();
+};
+$('continueDay').onclick=()=>{
+ $('prizeWin').classList.add('hidden');
+ $('activeLine').textContent='🏆 PREMIO GANADO · 1 HORA LIBRE';
+ $('activeLine').style.color='#ffd76a';
+ $('gift').classList.remove('active');
+ contestActive=false;
+ contestPrepared=false;
+ contestFinished=true;
+ contestFrom=null;
+ contestTo=null;
+ contestGoalLocked=null;
+ document.body.classList.remove('specialFocus');
+ render();
+};
+$('openChest').onclick=()=>{chestOpened=true;render()};
+$('editGoalsBtn').onclick=()=>{buildGoalEditor();$('goalPanel').classList.toggle('show')};
+$('applyGoals').onclick=()=>{
+ if(contestActive&&!contestFinished&& !confirm('⚠️ Cambiar estas metas actualizará también el objetivo del Premio Especial activo. ¿Continuar?'))return;
+ document.querySelectorAll('[data-goal-h]').forEach(i=>customGoals[i.dataset.goalH]=Number(i.value)||0);
+ if(contestActive&&!contestFinished){
+ let {from,to}=contestRange(), gNow=goals();
+ contestGoalLocked=active().filter(h=>h>=from&&h<to).reduce((sum,h)=>sum+(gNow[h]||0),0);
+ let contestGoalValue=contestTarget();
+ $('activeLine').textContent=`🎁 RETO ACTIVO · ${ht(from)} A ${ht(to)} · Meta ${money(contestGoalValue)}`;
+}
+ $('goalPanel').classList.remove('show');render();
+};
+$('restoreGoals').onclick=()=>{
+ if(contestActive&&!contestFinished&& !confirm('⚠️ Restaurar la curva cambiará también el objetivo del Premio Especial activo. ¿Continuar?'))return;
+ customGoals={};buildGoalEditor();render();
+};
+$('budget').oninput=()=>{customGoals={};buildGoalEditor();updateConfigSummary();render()};
+$('store').onchange=()=>updateConfigSummary();
+$('openHour').onchange=()=>{customGoals={};refreshContestHours();buildGoalEditor();updateConfigSummary();render()};
+$('closeHour').onchange=()=>{customGoals={};refreshContestHours();buildGoalEditor();updateConfigSummary();render()};
+$('from').onchange=()=>{refreshContestHours();render()};
+$('to').onchange=()=>render();
+$('reset').onclick=()=>location.reload();
+
+fillHours();refreshContestHours();buildGoalEditor();setDayStarted(false);render();
+setInterval(()=>{ if(dayStarted && !document.body.classList.contains('dayFinished') && reachedClosingTime()) showFinalScreen(); },60000);
+</script>
+</main>
+</body>
+</html>
