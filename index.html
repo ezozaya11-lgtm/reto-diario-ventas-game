@@ -6,6 +6,7 @@
 <title>Reto Diario de Ventas | Game</title>
 <style>
 *{box-sizing:border-box}
+script{display:none!important}
 body{margin:0;background:#0e0e0f;color:#fff;font-family:Arial,sans-serif}
 main{max-width:680px;margin:auto;padding:24px 18px 70px}
 h1{text-align:center;font-size:29px;margin:12px 0 28px}
@@ -76,6 +77,33 @@ main{max-width:760px}
 #nextCard{display:none!important}
 .saleCard{padding:14px}
 .saleCard input{padding:12px;font-size:16px}
+
+#sale{
+  margin-top:14px;
+  min-height:78px;
+  padding:18px 20px!important;
+  border:2px solid #c99a16!important;
+  background:#151515!important;
+  border-radius:18px!important;
+  font-size:28px!important;
+  font-weight:900;
+  text-align:center;
+  color:#fff!important;
+  box-shadow:0 0 0 1px rgba(255,215,106,.08), inset 0 0 18px rgba(255,215,106,.035);
+  transition:.18s ease;
+}
+#sale::placeholder{
+  color:#d7c17a;
+  opacity:.92;
+  font-size:18px;
+  font-weight:800;
+}
+#sale:focus{
+  outline:none;
+  border-color:#ffd76a!important;
+  box-shadow:0 0 0 4px rgba(255,215,106,.14), 0 0 24px rgba(255,215,106,.14);
+  transform:translateY(-1px);
+}
 .saleCard .btn{padding:13px;font-size:16px;margin-top:10px}
 .saleCard p{margin:8px 0;font-size:12px}
 .liveBadge{font-size:10px;padding:5px 7px}
@@ -305,6 +333,48 @@ body.dayStartedMode:not(.dayFinished) .topbar{display:flex}
 body.dayStartedMode:not(.dayFinished) section{display:block}
 body.dayStartedMode:not(.dayFinished) .score{display:grid}
 
+
+/* v3.3: cabecera de venta limpia en móvil */
+@media(max-width:520px){
+  .saleCard .sectionTitle{
+    display:flex!important;
+    flex-direction:column!important;
+    justify-content:center!important;
+    align-items:center!important;
+    gap:8px!important;
+    position:static!important;
+    text-align:center!important;
+  }
+  .saleCard .sectionTitle #liveHour{
+    position:static!important;
+    right:auto!important;
+    align-self:center!important;
+  }
+  .saleCard .sectionTitle>b{font-size:21px!important;line-height:1.15}
+}
+
+
+#inlineNext{
+  padding:22px 14px!important;
+}
+#inlineNextValue{
+  font-size:82px!important;
+  line-height:.95!important;
+  margin:10px auto 2px!important;
+  letter-spacing:-.03em;
+}
+#inlineNextInfo{
+  font-size:17px!important;
+  margin-top:0!important;
+  color:#bdbdbd!important;
+}
+@media(max-width:430px){
+  #inlineNextValue{font-size:76px!important}
+  #inlineNextInfo{font-size:16px!important}
+}
+
+#liveHour{display:none!important}
+.saleCard .sectionTitle{justify-content:center!important}
 </style>
 </head>
 <body>
@@ -318,9 +388,9 @@ body.dayStartedMode:not(.dayFinished) .score{display:grid}
 <section id="configCard" class="card configCard">
   <div class="configSummary">
     <div class="configSummaryText">
-      <b id="configSummaryTitle">Tienda · $0</b>
-      <span id="configSummaryHours">09:00 → 21:00</span>
       <span id="compactActiveBadge" class="compactActiveBadge">🔥 RETO ACTIVO</span>
+      <b id="configSummaryTitle" class="hidden">Tienda · $0</b>
+      <span id="configSummaryHours" class="hidden">09:00 → 21:00</span>
     </div>
     <button type="button" id="openConfig" class="smallBtn">⚙️ Editar</button>
   </div>
@@ -492,13 +562,13 @@ body.dayStartedMode:not(.dayFinished) .score{display:grid}
 <div id="postGoalMessage" class="postGoalMessage">👑 META DEL DÍA CUMPLIDA · Todo lo que registres ahora suma únicamente a los retos especiales y al récord.</div>
 <div id="inlineNext" style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin:10px 0 12px;padding:13px 14px;border-radius:14px;background:#111113;border:1px solid #3b3b40">
   <div style="min-width:0">
-    <div style="font-size:11px;color:#aaa;font-weight:900;letter-spacing:.09em">🎯 RETO ACTUAL DE LA HORA</div>
+    
     <div id="inlineNextInfo" style="font-size:12px;color:#aaa;margin-top:4px">Configura el día</div>
   </div>
   <b id="inlineNextValue" style="font-size:38px;line-height:1;white-space:nowrap">$0</b>
 </div>
 <p id="current" class="muted">Configura el día</p>
-<input id="sale" type="number" min="0" inputmode="decimal" placeholder="$0">
+<input id="sale" type="number" min="0" inputmode="decimal" placeholder="💰 ESCRIBE AQUÍ LA VENTA">
 <button type="button" id="register" class="btn">REGISTRAR VENTA 🔥</button>
 <div id="feedback" class="center" style="font-weight:800;margin-top:12px"></div>
 </section>
@@ -525,7 +595,7 @@ body.dayStartedMode:not(.dayFinished) .score{display:grid}
     <div id="finalStore" class="finalTitle">TIENDA</div>
     <div class="finalBudget">Presupuesto del día <b id="finalBudget">$0</b></div>
 
-    <div style="margin-top:22px;font-size:18px;font-weight:900">👑 META DEL DÍA CUMPLIDA</div>
+    <div id="finalHeadline" style="margin-top:22px;font-size:18px;font-weight:900">👑 META DEL DÍA CUMPLIDA</div>
     <div id="finalSales" class="finalSales">$0</div>
     <div style="color:#bbb">Venta final</div>
     <div id="finalReach" class="finalReach">0.0%</div>
@@ -569,6 +639,7 @@ function showFinalScreen(){
   $('finalBudget').textContent=money(b);
   $('finalSales').textContent=money(t);
   $('finalReach').textContent=r.toFixed(1)+'% DEL PRESUPUESTO';
+  $('finalHeadline').textContent=r>=100?'👑 META DEL DÍA CUMPLIDA':'🏁 DÍA FINALIZADO';
   $('finalStars').textContent=m.stars;
   $('finalPerfect').textContent=m.perfect;
   $('finalPrizeCount').textContent=prizeWon?1:0;
@@ -605,10 +676,11 @@ function fillHours(){
 }
 
 function refreshContestHours(){
-  let a=+$('openHour').value, c=+$('closeHour').value;
-  let oldFrom=+$('from').value||a, oldTo=+$('to').value||Math.min(c,a+3);
-  $('from').innerHTML=HOURS.filter(h=>h>=a&&h<c).map(h=>`<option value="${h}">${ht(h)}</option>`).join('');
-  if(![...$('from').options].some(o=>+o.value===oldFrom)) oldFrom=a;
+  let c=+$('closeHour').value;
+  let oldFrom=+$('from').value||9, oldTo=+$('to').value||Math.min(c,12);
+  // El Premio Especial siempre puede comenzar desde las 09:00.
+  $('from').innerHTML=HOURS.filter(h=>h>=9&&h<c).map(h=>`<option value="${h}">${ht(h)}</option>`).join('');
+  if(![...$('from').options].some(o=>+o.value===oldFrom)) oldFrom=9;
   $('from').value=oldFrom;
   let f=+$('from').value;
   $('to').innerHTML=HOURS.filter(h=>h>f&&h<=c).map(h=>`<option value="${h}">${ht(h)}</option>`).join('');
@@ -644,12 +716,21 @@ function treasureTarget(r){if(r<105)return[105,'🪙 COFRE DE BRONCE'];if(r<110)
 
 
 function armContest(){
-  contestFrom=+$('from').value||(+$('openHour').value||9);
+  contestFrom=+$('from').value||9;
   contestTo=+$('to').value||Math.min(21,contestFrom+1);
   if(contestTo<=contestFrom){
     alert('La hora final del concurso debe ser posterior a la hora de inicio.');
     return false;
   }
+  // Si el premio comienza antes del horario configurado del reto diario,
+  // ampliamos el inicio del día para que existan todos los cortes del concurso.
+  // Ej.: 09:00 a 11:00 = registros a las 10:00 y 11:00.
+  if(contestFrom < (+$('openHour').value||9)){
+    $('openHour').value=String(contestFrom);
+    customGoals={};
+    buildGoalEditor();
+  }
+
   contestPrepared=true;
   contestActive=true;
   contestFinished=false;
@@ -739,10 +820,17 @@ function setDayStarted(v){
   updateConfigSummary();
 }
 
+function reachedClosingTime(){
+  if(!dayStarted) return false;
+  const now=new Date();
+  const close=+$('closeHour').value||21;
+  return now.getHours()>=close;
+}
+
 function render(){
  let b=+$('budget').value||0,t=total(),r=b?t/b*100:0,g=goals(),nh=nextHour(),m=metrics();
 
- if(dayStarted && nh==null){
+ if(dayStarted && (nh==null || reachedClosingTime())){
    showFinalScreen();
    return;
  }
@@ -750,15 +838,16 @@ function render(){
 
  let dayGoalReached = b>0 && t>=b;
  $('saleCard').classList.toggle('dayCompleteMode', dayGoalReached);
- $('saleCardTitle').textContent = dayGoalReached ? '💰 VENTA EXTRA' : '💰 Venta de la hora';
+ $('saleCardTitle').textContent = dayGoalReached ? '🛡️ VENTA AL COLCHÓN' : '💰 Venta de la hora';
  if(dayGoalReached){
    let recordHour=nextHour();
    $('postGoalMessage').textContent=recordHour!=null
-     ? `👑 META DEL DÍA CUMPLIDA · Registra ahora la venta de ${ht(recordHour)} a ${ht(recordHour+1)}. Esta venta suma al récord.`
-     : '👑 META DEL DÍA CUMPLIDA · Todas las horas fueron registradas. Todo lo adicional suma al récord.';
+     ? `👑 META DEL DÍA CUMPLIDA · A partir de aquí, todo lo que vendas se suma al COLCHÓN. 🛡️ Colchón acumulado: ${money(Math.max(0,t-b))}`
+     : `👑 META DEL DÍA CUMPLIDA · Todo lo adicional construyó tu COLCHÓN. 🛡️ Colchón acumulado: ${money(Math.max(0,t-b))}`;
  }
  $('stars').textContent=m.stars;$('streak').textContent='x'+m.st;$('perfect').textContent=m.perfect;
- $('record').textContent=r.toFixed(1)+'%';$('recordText').textContent=t>b?money(t-b)+' arriba de la meta':'Vamos por el 100%.';
+ $('record').textContent=dayGoalReached?money(Math.max(0,t-b)):r.toFixed(1)+'%';
+ $('recordText').textContent=dayGoalReached?'🛡️ COLCHÓN ACUMULADO · Todo lo que vendas arriba del presupuesto protege el resultado del día.':'Vamos por el 100%.';
  renderContest();
 
  if(nh!=null && !dayGoalReached){
@@ -777,7 +866,7 @@ function render(){
  }else{
    $('liveHour').textContent=dayGoalReached?'Meta cumplida':'Día completo';
    $('inlineNextValue').textContent='🏁';
-   $('inlineNextInfo').textContent=dayGoalReached?'Solo retos especiales y récord':'Todo suma al récord';
+   $('inlineNextInfo').textContent=dayGoalReached?'Todo lo adicional suma al COLCHÓN':'Todo suma al récord';
  }
 
  let treasureOn=b>0&&r>=100;$('treasure').classList.toggle('hidden',!treasureOn);
@@ -867,7 +956,7 @@ $('register').onclick=()=>{
    hourAsked[h]=0;
    hourResult[h]='record';
    $('sale').value='';
-   $('feedback').textContent=`👑 Venta de ${ht(h)} a ${ht(h+1)} registrada al récord.`;
+   $('feedback').textContent=`🛡️ Venta de ${ht(h)} a ${ht(h+1)} agregada al COLCHÓN. Colchón acumulado: ${money(Math.max(0,total()-(+$('budget').value||0)))}`;
    render();
    return;
  }
@@ -954,6 +1043,7 @@ $('to').onchange=()=>render();
 $('reset').onclick=()=>location.reload();
 
 fillHours();refreshContestHours();buildGoalEditor();setDayStarted(false);render();
+setInterval(()=>{ if(dayStarted && !document.body.classList.contains('dayFinished') && reachedClosingTime()) showFinalScreen(); },60000);
 </script>
 </main>
 </body>
