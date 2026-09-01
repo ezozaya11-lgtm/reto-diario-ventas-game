@@ -976,8 +976,7 @@ $('register').onclick=()=>{
    $('feedback').textContent='⭐ ¡HORA CONQUISTADA!';
  }else{
    hourResult[h]='miss';
-   $('feedback').textContent=`🎯 Faltaron ${money(required-v)} para conquistar esta hora. El día continúa.`;
- }
+   $('feedback').textContent=`🎯 Faltaron ${money(required-v)} para conquistar esta hora. El día continúa
 
  if(contestActive&&!contestFinished){
    let {from,to}=contestRange();
